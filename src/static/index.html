@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <title>Express JS Demo</title>
+    <style>
+        #status {
+            font-size: 32px;
+        }
+
+        #prefix {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="prefix">Host machine details:</h1>
+    <div id="status"></div>
+    <script>
+        (async () => {
+            // Get the status message from our server
+            const statusResponse = await fetch("/api/status");
+            const statusMessage = await statusResponse.text();
+
+            // Update the status div with the message
+            const statusDiv = document.getElementById("status");
+            statusDiv.innerText = statusMessage;
+        })();
+    </script>
+</body>
+
+</html>
