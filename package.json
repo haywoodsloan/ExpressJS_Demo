@@ -4,8 +4,11 @@
   "description": "A demo for using Express.js to serve static and dynamic content",
   "main": "src/main.js",
   "scripts": {
-    "start": "node src/main.js",
-    "test": "echo Just test in prod baby!"
+    "db-init": "SqlLocalDB create TrainingRecords -s && SqlCmd -S (localdb)\\TrainingRecords -i ./src/db/init.sql",
+    "db-start": "SqlLocalDB start TrainingRecords",
+    "db-stop": "SqlLocalDB stop TrainingRecords",    
+    "debug": "npm run db-start && npm run start",
+    "start": "node src/main.js"
   },
   "author": "Sloan Haywood",
   "license": "ISC",
