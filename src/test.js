@@ -1,15 +1,16 @@
-const sql = require('mssql');
+const sql = require('mssql/msnodesqlv8');
 
 (async () => {
-    try {
-        await sql.connect({
-            server: 'localhost',
-            database: 'TrainingRecords'
-        });
+    await sql.connect({
+        server: 'localhost\\SQLEXPRESS',
+        database: 'TrainingRecords',
+        options: {
+            trustedConnection: true
+        }
+    });
 
-        const result = await sql.query`select * from TrainingRecords`;
-        console.log(result);
-    } catch (err) {
-        console.error(err);
-    }
+    const result = await sql.query`select * from dbo.Users`;
+    console.log(result.recordset);
+
+    sql.close();
 })();

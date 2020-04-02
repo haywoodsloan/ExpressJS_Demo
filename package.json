@@ -4,18 +4,16 @@
   "description": "A demo for using Express.js to serve static and dynamic content",
   "main": "src/main.js",
   "scripts": {
-    "db-init": "SqlLocalDB create TrainingRecords -s && SqlCmd -S (localdb)\\TrainingRecords -i ./src/db/init.sql",
-    "db-populate": "SqlCmd -S (localdb)\\TrainingRecords -i ./src/db/populate.sql",
-    "db-reset": "SqlCmd -S (localdb)\\TrainingRecords -i ./src/db/reset.sql && npm run db-stop && SqlLocalDB delete TrainingRecords && npm run db-init",
-    "db-start": "SqlLocalDB start TrainingRecords",
-    "db-stop": "SqlLocalDB stop TrainingRecords",
-    "debug": "npm run db-start && npm run start",
+    "db-init": "SqlCmd -S localhost\\SQLEXPRESS -i ./src/db/init.sql",
+    "db-populate": "SqlCmd -S localhost\\SQLEXPRESS -i ./src/db/populate.sql",
+    "db-reset": "SqlCmd -S localhost\\SQLEXPRESS -i ./src/db/reset.sql && npm run db-init",
     "start": "node src/main.js"
   },
   "author": "Sloan Haywood",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "msnodesqlv8": "^1.0.1",
     "mssql": "^6.2.0"
   }
 }
