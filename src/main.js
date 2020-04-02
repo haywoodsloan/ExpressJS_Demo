@@ -1,5 +1,5 @@
-const express = require("express");
-const os = require("os");
+const express = require('express');
+const os = require('os');
 
 // Create the express app instance
 const app = express();
@@ -10,7 +10,7 @@ const static = express.static(`${__dirname}/static`);
 app.use(static);
 
 // Add handlers for our APIs
-app.get("/api/status", (req, res) => {
+app.get('/api/status', (req, res) => {
     res.statusCode = 200;
     res.end(`${os.hostname()} - ${os.platform()} - ${os.release()}`);
 })
