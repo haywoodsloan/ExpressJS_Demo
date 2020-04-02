@@ -5,8 +5,8 @@ GO
 -- Create the new database if it does not exist already
 IF NOT EXISTS (
     SELECT name
-FROM sys.databases
-WHERE name = N'TrainingRecords'
+    FROM sys.databases
+    WHERE name = N'TrainingRecords'
 )
 CREATE DATABASE TrainingRecords
 GO
@@ -19,10 +19,11 @@ GO
 IF OBJECT_ID('dbo.Users', 'U') IS NULL
 CREATE TABLE dbo.Users
 (
-    UsersId INT NOT NULL PRIMARY KEY,
+    Id INT NOT NULL PRIMARY KEY,
     -- primary key column
-    FName [NVARCHAR](MAX) NOT NULL,
-    LName [NVARCHAR](MAX) NOT NULL,
+    FirstName [NVARCHAR](MAX) NOT NULL,
+    LastName [NVARCHAR](MAX) NOT NULL,
+    Location [NVARCHAR](MAX) NOT NULL,
     Department [NVARCHAR](MAX) NOT NULL,
 );
 GO
