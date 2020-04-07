@@ -25,12 +25,12 @@ const os = require('os');
         // Get basic machine status
         res.statusCode = 200;
         res.send(`${os.hostname()} - ${os.platform()} - ${os.release()}`);
-    })
+    });
 
     app.get('/api/users', async (req, res) => {
         // Deliver the list of users
         try {
-            const result = await sql.query("EXEC DetailedUsers")
+            const result = await sql.query("EXEC DetailedUsers");
             res.statusCode = 200;
             res.send(result.recordset);
         } catch (error) {
