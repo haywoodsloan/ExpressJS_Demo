@@ -24,27 +24,18 @@ const os = require('os');
     app.get('/api/status', (req, res) => {
         // Get basic machine status
         res.statusCode = 200;
-        res.end(`${os.hostname()} - ${os.platform()} - ${os.release()}`);
+        res.send(`${os.hostname()} - ${os.platform()} - ${os.release()}`);
     })
 
     app.get('/api/users', async (req, res) => {
         // Deliver the list of users
         try {
-            const result = await sql.query(`
-                SELECT Users.*, IsNull(Completed.Count, 0) AS TrainingsCompleted
-                FROM Users
-                LEFT JOIN (
-                    SELECT Count(*) AS Count, UserId 
-                    FROM Completed
-                    GROUP BY UserId 
-                ) Completed ON Completed.UserId=Users.Id
-            `);
-
+            const result = await sql.query("EXEC DetailedUsers")
             res.statusCode = 200;
-            res.end(JSON.stringify(result.recordset));
+            res.send(result.recordset);
         } catch (error) {
             res.statusCode = 500;
-            res.end(JSON.stringify(error));
+            res.send(error.stack);
         }
     });
 

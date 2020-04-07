@@ -1,13 +1,4 @@
--- Connect to the 'master' database to first check if our database already exists
-USE master
-GO
-
 -- Create the new database if it does not exist already
-IF NOT EXISTS (
-    SELECT name
-    FROM sys.databases
-    WHERE name = N'TrainingRecords'
-)
 CREATE DATABASE TrainingRecords
 GO
 
@@ -16,7 +7,6 @@ USE TrainingRecords
 GO
 
 -- Create a new table called 'Users' in schema 'dbo'
-IF OBJECT_ID('dbo.Users', 'U') IS NULL
 CREATE TABLE dbo.Users
 (
     Id INT IDENTITY(1, 1) PRIMARY KEY,
@@ -29,7 +19,6 @@ CREATE TABLE dbo.Users
 GO
 
 -- Create a new table called 'Documents' in schema 'dbo'
-IF OBJECT_ID('dbo.Documents', 'U') IS NULL
 CREATE TABLE dbo.Documents
 (
     Id INT IDENTITY(1, 1) PRIMARY KEY,
@@ -40,7 +29,6 @@ CREATE TABLE dbo.Documents
 GO
 
 -- Create a new table called 'Completed' in schema 'dbo'
-IF OBJECT_ID('dbo.Completed', 'U') IS NULL
 CREATE TABLE dbo.Completed
 (
     Id INT IDENTITY(1, 1) PRIMARY KEY,
@@ -51,4 +39,17 @@ CREATE TABLE dbo.Completed
     -- linked to documents table
     Version [NVARCHAR](MAX) NOT NULL
 );
+GO
+
+-- Create a stored procedure for getting the user details in schema 'dbo'
+CREATE PROCEDURE dbo.DetailedUsers
+AS
+    -- body of the stored procedure
+    SELECT Users.*, IsNull(Completed.Count, 0) AS TrainingsCompleted
+    FROM Users
+    LEFT JOIN (
+        SELECT Count(*) AS Count, UserId 
+        FROM Completed
+        GROUP BY UserId 
+    ) Completed ON Completed.UserId=Users.Id
 GO
