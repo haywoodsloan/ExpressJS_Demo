@@ -6,7 +6,7 @@
   "scripts": {
     "db-init": "SqlCmd -S localhost\\SQLEXPRESS -i ./src/db/init.sql",
     "db-populate": "SqlCmd -S localhost\\SQLEXPRESS -i ./src/db/populate.sql",
-    "db-reset": "SqlCmd -S localhost\\SQLEXPRESS -i ./src/db/reset.sql && npm run db-init",
+    "db-reset": "SqlCmd -S localhost\\SQLEXPRESS -i ./src/db/reset.sql && npm run db-init && npm run db-populate",
     "start": "node src/main.js"
   },
   "author": "Sloan Haywood",

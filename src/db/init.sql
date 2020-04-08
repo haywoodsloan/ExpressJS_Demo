@@ -52,4 +52,5 @@ AS
         FROM Completed
         GROUP BY UserId 
     ) Completed ON Completed.UserId=Users.Id
+    ORDER BY FirstName, LastName ASC
 GO

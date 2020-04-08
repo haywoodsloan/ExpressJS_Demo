@@ -1,32 +1,135 @@
 <html>
 
 <head>
-    <title>Express JS Demo</title>
+    <title>Training Overview</title>
     <style>
-        #status {
-            font-size: 32px;
+        body {
+            background-image: linear-gradient(to bottom, deepskyblue, cornsilk);
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        #prefix {
-            font-size: 48px;
-            margin-bottom: 10px;
+        #title {
+            color: white;
+            margin-bottom: 5px;
+            text-shadow:
+                -1px 1px 0 #000,
+                1px 1px 0 #000,
+                1px -1px 0 #000,
+                -1px -1px 0 #000;
+        }
+
+        #header-row {
+            background-color: lightblue;
+            border-bottom: 2px solid coral;
+            font-weight: bold;
+        }
+
+        #record-table {
+            border-collapse: collapse;
+            display: table;
+            margin-top: 10px;
+            min-width: 800px;
+        }
+
+        #search-name {
+            background-color: lightcyan;
+            font: inherit;
+            font-weight: normal;
+            margin-top: 10px;
+            min-width: 20ch;
+            padding-left: 5px;
+            width: 20ch;
+        }
+
+        .record-cell {
+            display: table-cell;
+            padding: 5px;
+        }
+
+        .record-cell+.record-cell {
+            border-left: 2px solid coral;
+            padding-left: 10px;
+        }
+
+        .record-row {
+            display: table-row;
         }
     </style>
 </head>
 
 <body>
-    <h1 id="prefix">Host machine details:</h1>
-    <div id="status"></div>
-    <script>
-        (async () => {
-            // Get the status message from our server
-            const statusResponse = await fetch("/api/status");
-            const statusMessage = await statusResponse.text();
+    <h1 id='title'>Training Records - Overview</h1>
+    <hr style='border-top: 3px solid coral;'>
+    <label style='font-weight: bold;'>
+        Search by name:
+        <input id='search-name' type='text' placeholder='first and/or last name' spellcheck="false"
+            oninput="search(event)">
+    </label>
 
-            // Update the status div with the message
-            const statusDiv = document.getElementById("status");
-            statusDiv.innerText = statusMessage;
+    <div id='record-table'>
+        <div id='header-row' class='record-row'>
+            <div class='record-cell'>Name</div>
+            <div class='record-cell'>Location</div>
+            <div class='record-cell'>Department</div>
+            <div class='record-cell'>Completed</div>
+        </div>
+    </div>
+
+    <script>
+        const rowColor1 = "lightblue";
+        const rowColor2 = "lavender";
+
+        (async () => {
+            const response = await fetch(window.location.origin + '/api/users');
+            const result = await response.json();
+
+            for (let i = 0; i < result.length; i++) {
+                const user = result[i];
+
+                const row = document.createElement('div');
+                row.classList.add('record-row');
+                row.style.backgroundColor = i % 2 ? rowColor1 : rowColor2;
+
+                const name = document.createElement('div');
+                name.classList.add('record-cell');
+                name.innerText = `${user.FirstName} ${user.LastName}`;
+                row.append(name);
+
+                const loc = document.createElement('div');
+                loc.classList.add('record-cell');
+                loc.innerText = user.Location;
+                row.append(loc);
+
+                const dept = document.createElement('div');
+                dept.classList.add('record-cell');
+                dept.innerText = user.Department;
+                row.append(dept);
+
+                const completed = document.createElement('div');
+                completed.classList.add('record-cell')
+                completed.innerText = user.TrainingsCompleted;
+                row.append(completed);
+
+                document.querySelector('#record-table').append(row);
+            }
         })();
+
+        function search(event) {
+            const input = event.target.value.toLowerCase();
+            const rows = document.querySelectorAll(".record-row:not(#header-row)");
+
+            let count = 0;
+            for (const row of rows) {
+                const name = row.children[0].innerText.toLowerCase();
+                if (!input || name.includes(input)) {
+                    row.style.display = null;
+                    row.style.backgroundColor = count % 2 ? rowColor1 : rowColor2;
+                    count++;
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
     </script>
 </body>
 
