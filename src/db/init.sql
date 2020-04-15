@@ -41,25 +41,27 @@ CREATE TABLE Completed
 );
 GO
 
--- Create a stored procedure for getting the user details in schema 'dbo'
-CREATE PROCEDURE DetailedUsers
+-- Create a new view called 'UsersAndTrainings' in schema 'dbo'
+CREATE VIEW UsersAndTrainings
 AS
     -- Get a table of each users and the docs they should be trained on
     WITH UsersAndDocs AS (
         SELECT U.*, D.Id as DocId, d.Version AS DocVer
         FROM Users AS U
         CROSS JOIN Documents AS D
-    ),
-
-    -- Add in the version of the doc the user is trained on
-    UsersAndTrainings AS (
-        SELECT UD.*, C.Version as TrainedVer
-        FROM UsersAndDocs as UD
-        LEFT JOIN Completed as C
-        ON UD.DocId = C.DocId AND UD.Id = C.UserId
     )
 
-    -- Finally aggregate by user the number of completed and required trainings
+    -- Add in the version of the doc the user is trained on
+    SELECT UD.*, C.Version as TrainedVer
+    FROM UsersAndDocs as UD
+    LEFT JOIN Completed as C
+    ON UD.DocId = C.DocId AND UD.Id = C.UserId
+GO
+
+-- Create a stored procedure for getting the user details in schema 'dbo'
+CREATE VIEW DetailedUsers
+AS
+    -- Aggregate by user the number of completed and required trainings
     SELECT 
         Id, FirstName, LastName, Department, Location,
         SUM(CASE WHEN UT.TrainedVer >= UT.DocVer THEN 1 ELSE 0 END) AS TrainingsCompleted,
