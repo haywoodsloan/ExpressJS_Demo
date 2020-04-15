@@ -3,7 +3,7 @@ USE TrainingRecords
 GO
 
 -- Insert some fake users
-INSERT INTO dbo.Users
+INSERT INTO Users
     (FirstName, LastName, Location, Department)
 VALUES
     ('Bob', 'Smith', 'Redmond', 'Eng'),
@@ -14,31 +14,31 @@ VALUES
     ('Mandy', 'Ydnam', 'Camas', 'Tech'),
     ('Dude', 'Guy', 'Redmond', 'Writer'),
     ('Dude', 'Lady', 'Camas', 'Writer'),
-    ('Some', 'Body', 'Redmond', 'Wildcard'),
-    ('Happy', 'Sad', 'Camas', 'Wildcard')
+    ('Some', 'Body', 'Redmond', 'HR'),
+    ('Happy', 'Sad', 'Camas', 'HR')
 GO
 
 -- Insert some fake documents
-INSERT INTO dbo.Documents
+INSERT INTO Documents
     (Name, Version)
 VALUES
-    ('How to eat cheese', '1.0'),
-    ('Part assembly', '1.1'),
-    ('Reporting farts', '2.0')
+    ('How to eat cheese', 1),
+    ('Part assembly', 2),
+    ('Reporting farts', 5)
 GO
 
 --- Insert some fake completion records
-INSERT INTO dbo.Completed
+INSERT INTO Completed
     (UserId, DocId, Version)
 VALUES
-    (1, 1, '1.0'),
-    (1, 2, '1.1'),
-    (2, 1, '1.0'),
-    (2, 2, '1.1'),
-    (3, 3, '2.0'),
-    (4, 2, '1.0'),
-    (5, 3, '2.0'),
-    (6, 2, '1.1'),
-    (7, 1, '1.0'),
-    (8, 1, '1.0')
+    (1, 1, 1),
+    (1, 2, 2),
+    (2, 1, 1),
+    (2, 2, 2),
+    (3, 3, 5),
+    (4, 2, 2),
+    (5, 3, 5),
+    (6, 2, 2),
+    (7, 1, 1),
+    (8, 1, 1)
 GO
