@@ -1,6 +1,6 @@
 -- Drop the database 'TrainingRecords'
 -- Connect to the 'master' database to run this snippet
-USE master
+USE master;
 GO
 
 -- Uncomment the ALTER DATABASE statement below to set the database to SINGLE_USER mode if the drop database command fails because the database is in use.
@@ -11,5 +11,5 @@ IF EXISTS (
    FROM sys.databases
    WHERE name = N'TrainingRecords'
 )
-DROP DATABASE TrainingRecords
+DROP DATABASE TrainingRecords;
 GO

@@ -39,6 +39,41 @@ const os = require('os');
         }
     });
 
+    app.get('/api/user', async (req, res) => {
+        // Deliver the list of users
+        try {
+            const userId = req.query.userId;
+            if (!userId) {
+                throw new Error("No userId param was specified");
+            }
+
+            let result = await sql.query(`SELECT * FROM Users WHERE Id = ${userId}`);
+            const output = result.recordset[0];
+
+            if (!output) {
+                throw new Error("No result for the specified userId was found");
+            }
+
+            result = await sql.query(
+                `SELECT DocId, DocName, DocVer FROM UsersAndTrainings 
+                 WHERE Id = ${userId} AND TrainedVer >= DocVer`
+            );
+            output.CompletedTrainings = result.recordset;
+
+            result = await sql.query(
+                `SELECT DocId, DocName, DocVer, TrainedVer FROM UsersAndTrainings 
+                 WHERE Id = ${userId} AND (TrainedVer < DocVer OR TrainedVer IS NULL)`
+            );
+            output.NeededTrainings = result.recordset;
+
+            res.statusCode = 200;
+            res.send(output);
+        } catch (error) {
+            res.statusCode = 500;
+            res.send(error.stack);
+        }
+    });
+
     // Start the Express app listening
     app.listen(port, () => {
         console.log(`Started Express app listening on port ${port}`);

@@ -1,5 +1,5 @@
 -- Use the right db
-USE TrainingRecords
+USE TrainingRecords;
 GO
 
 -- Insert some fake users
@@ -15,7 +15,7 @@ VALUES
     ('Dude', 'Guy', 'Redmond', 'Writer'),
     ('Dude', 'Lady', 'Camas', 'Writer'),
     ('Some', 'Body', 'Redmond', 'HR'),
-    ('Happy', 'Sad', 'Camas', 'HR')
+    ('Happy', 'Sad', 'Camas', 'HR');
 GO
 
 -- Insert some fake documents
@@ -24,7 +24,10 @@ INSERT INTO Documents
 VALUES
     ('How to eat cheese', 1),
     ('Part assembly', 2),
-    ('Reporting farts', 5)
+    ('Reporting smells', 5),
+    ('Secret tunnels', 8),
+    ('How to cook eggs', 4),
+    ('10 steps to walking up stairs', 3);
 GO
 
 --- Insert some fake completion records
@@ -40,5 +43,15 @@ VALUES
     (5, 3, 5),
     (6, 2, 2),
     (7, 1, 1),
-    (8, 1, 1)
+    (8, 1, 1),
+    (9, 4, 7),
+    (4, 5, 3),
+    (1, 3, 5),
+    (7, 6, 3),
+    (8, 6, 2),
+    (2, 4, 8),
+    (3, 4, 5),
+    (5, 4, 8),
+    (6, 5, 4),
+    (10, 1, 1);
 GO
