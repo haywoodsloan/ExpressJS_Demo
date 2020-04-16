@@ -42,29 +42,31 @@ const os = require('os');
     app.get('/api/user', async (req, res) => {
         // Deliver the list of users
         try {
-            const userId = req.query.userId;
+            const { userId } = req.query;
             if (!userId) {
                 throw new Error("No userId param was specified");
             }
 
-            let result = await sql.query(`SELECT * FROM Users WHERE Id = ${userId}`);
-            const output = result.recordset[0];
+            let result = await sql.query(
+                `SELECT * FROM Users WHERE Id = ${userId};
 
+                 SELECT DocId, DocName, DocVer FROM UsersAndTrainings 
+                 WHERE Id = ${userId} AND TrainedVer >= DocVer;
+
+                 SELECT DocId, DocName, DocVer, TrainedVer FROM UsersAndTrainings 
+                 WHERE Id = ${userId} AND (TrainedVer < DocVer OR TrainedVer IS NULL);`
+            );
+
+            // We only need the first rows data from the first select statement
+            const output = result.recordsets[0][0];
             if (!output) {
                 throw new Error("No result for the specified userId was found");
             }
 
-            result = await sql.query(
-                `SELECT DocId, DocName, DocVer FROM UsersAndTrainings 
-                 WHERE Id = ${userId} AND TrainedVer >= DocVer`
-            );
-            output.CompletedTrainings = result.recordset;
-
-            result = await sql.query(
-                `SELECT DocId, DocName, DocVer, TrainedVer FROM UsersAndTrainings 
-                 WHERE Id = ${userId} AND (TrainedVer < DocVer OR TrainedVer IS NULL)`
-            );
-            output.NeededTrainings = result.recordset;
+            // Use the results of the next two select statements
+            // as the array of done and needed trainings
+            output.CompletedTrainings = result.recordsets[1];
+            output.NeededTrainings = result.recordsets[2];
 
             res.statusCode = 200;
             res.send(output);
