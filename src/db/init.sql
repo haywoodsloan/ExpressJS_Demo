@@ -2,7 +2,7 @@
 CREATE DATABASE TrainingRecords;
 GO
 
--- Swith from using master to the new database
+-- Switch from using master to the new database
 USE TrainingRecords;
 GO
 
