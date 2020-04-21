@@ -30,7 +30,13 @@ const os = require('os');
     app.get('/api/users', async (req, res) => {
         // Deliver the list of users
         try {
-            const result = await sql.query('SELECT * FROM DetailedUsers');
+            const result = await sql.query(
+                `SELECT 
+                    Id, FirstName, LastName, Department,
+                    Location, TrainingsCompleted, TrainingsRequired
+                 FROM DetailedUsers`
+            );
+
             res.statusCode = 200;
             res.send(result.recordset);
         } catch (error) {
@@ -48,12 +54,13 @@ const os = require('os');
             }
 
             let result = await sql.query(
-                `SELECT * FROM Users WHERE Id = ${userId};
+                `SELECT Id, FirstName, LastName, Department, Location FROM Users
+                 WHERE Id = ${userId};
 
-                 SELECT DocId, DocName, DocVer FROM UsersAndTrainings 
+                 SELECT DocId, DocName, DocVer FROM UsersAndTrainings
                  WHERE Id = ${userId} AND TrainedVer >= DocVer;
 
-                 SELECT DocId, DocName, DocVer, TrainedVer FROM UsersAndTrainings 
+                 SELECT DocId, DocName, DocVer, TrainedVer FROM UsersAndTrainings
                  WHERE Id = ${userId} AND (TrainedVer < DocVer OR TrainedVer IS NULL);`
             );
 

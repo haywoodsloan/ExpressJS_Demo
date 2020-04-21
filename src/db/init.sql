@@ -46,7 +46,9 @@ CREATE VIEW UsersAndTrainings
 AS
     -- Get a table of each users and the docs they should be trained on
     WITH UsersAndDocs AS (
-        SELECT U.*, D.Name as DocName, D.Id as DocId, D.Version AS DocVer
+        SELECT 
+            U.Id, U.FirstName, U.LastName, U.Department, U.Location, 
+            D.Name as DocName, D.Id as DocId, D.Version AS DocVer
         FROM Users AS U
         CROSS JOIN Documents AS D
     )
