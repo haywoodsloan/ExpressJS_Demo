@@ -2,122 +2,55 @@
 
 <head>
     <title>Training Overview</title>
-    <style>
-        body {
-            background-image: linear-gradient(to bottom, deepskyblue, cornsilk);
-            font-family: Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        #title {
-            color: white;
-            margin-bottom: 5px;
-            text-shadow:
-                -1px 1px 0 #000,
-                1px 1px 0 #000,
-                1px -1px 0 #000,
-                -1px -1px 0 #000;
-        }
-
-        #header-row {
-            background-color: lightblue;
-            border-bottom: 2px solid coral;
-            font-weight: bold;
-        }
-
-        #record-table {
-            border-collapse: collapse;
-            display: table;
-            margin-top: 10px;
-            min-width: 800px;
-        }
-
-        #search-name {
-            background-color: lightcyan;
-            font: inherit;
-            font-weight: normal;
-            margin-top: 10px;
-            min-width: 20ch;
-            padding-left: 5px;
-            width: 20ch;
-        }
-
-        .record-cell {
-            display: table-cell;
-            max-width: 0;
-            padding: 5px;
-        }
-
-        .record-cell+.record-cell {
-            border-left: 2px solid coral;
-            padding-left: 10px;
-        }
-
-        .record-row {
-            display: table-row;
-        }
-    </style>
+    <link rel='stylesheet' href='css/table.css'>
+    <script src='js/table.js'></script>
 </head>
 
 <body>
-    <h1 id='title'>Training Records - Overview</h1>
+    <h1 class='header'>Training Records - Overview</h1>
     <hr style='border-top: 3px solid coral;'>
     <label style='font-weight: bold;'>
         Search by name:
-        <input id='search-name' type='text' placeholder='first and/or last name' spellcheck="false"
-            oninput="search(event)">
+        <input class='search-box' type='text' placeholder='first and/or last name' spellcheck='false'
+            oninput='search(event)'>
     </label>
 
-    <div id='record-table'>
-        <div id='header-row' class='record-row'>
+    <div class='record-table'>
+        <div class='header-row'>
             <div class='record-cell'>Name</div>
             <div class='record-cell'>Location</div>
             <div class='record-cell'>Department</div>
             <div class='record-cell'>Completed</div>
+            <div class='record-cell'>Required</div>
+            <div class='record-cell'>Report</div>
         </div>
     </div>
 
     <script>
-        const rowColor1 = "lightblue";
-        const rowColor2 = "lavender";
-
+        // Fetch the users api and put the results in the table
         (async () => {
             const response = await fetch(window.location.origin + '/api/users');
             const result = await response.json();
 
-            for (let i = 0; i < result.length; i++) {
-                const user = result[i];
+            // Add a property with the full name and another with the report link
+            for (const user of result) {
+                const link = document.createElement('a');
+                link.href = `${window.location.origin}/reports/user.html?userId=${user.Id}`;
+                link.text = 'Link';
 
-                const row = document.createElement('div');
-                row.classList.add('record-row');
-                row.style.backgroundColor = i % 2 ? rowColor1 : rowColor2;
-
-                const name = document.createElement('div');
-                name.classList.add('record-cell');
-                name.innerText = `${user.FirstName} ${user.LastName}`;
-                row.append(name);
-
-                const loc = document.createElement('div');
-                loc.classList.add('record-cell');
-                loc.innerText = user.Location;
-                row.append(loc);
-
-                const dept = document.createElement('div');
-                dept.classList.add('record-cell');
-                dept.innerText = user.Department;
-                row.append(dept);
-
-                const completed = document.createElement('div');
-                completed.classList.add('record-cell')
-                completed.innerText = user.TrainingsCompleted;
-                row.append(completed);
-
-                document.querySelector('#record-table').append(row);
+                user.Link = link;
+                user.FullName = `${user.FirstName} ${user.LastName}`;
             }
+
+            // For each user create a new row
+            document.querySelector('.record-table').append(...makeRows(result,
+                ['FullName', 'Location', 'Department', 'TrainingsCompleted', 'TrainingsRequired', 'Link']));
         })();
 
+        // Run when the search box is typed in, filters results that don't match
         function search(event) {
             const input = event.target.value.toLowerCase();
-            const rows = document.querySelectorAll(".record-row:not(#header-row)");
+            const rows = document.querySelectorAll('.record-row');
 
             let count = 0;
             for (const row of rows) {
@@ -127,7 +60,7 @@
                     row.style.backgroundColor = count % 2 ? rowColor1 : rowColor2;
                     count++;
                 } else {
-                    row.style.display = "none";
+                    row.style.display = 'none';
                 }
             }
         }

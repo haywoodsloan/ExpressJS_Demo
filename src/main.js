@@ -59,9 +59,11 @@ const os = require('os');
 
                  SELECT DocId, DocName, DocVer FROM UsersAndTrainings
                  WHERE Id = ${userId} AND TrainedVer >= DocVer;
+                 ORDER BY DocId
 
                  SELECT DocId, DocName, DocVer, TrainedVer FROM UsersAndTrainings
-                 WHERE Id = ${userId} AND (TrainedVer < DocVer OR TrainedVer IS NULL);`
+                 WHERE Id = ${userId} AND (TrainedVer < DocVer OR TrainedVer IS NULL);
+                 ORDER BY DocId`
             );
 
             // We only need the first rows data from the first select statement

@@ -1,0 +1,53 @@
+body {
+    background-image: linear-gradient(to bottom, deepskyblue, cornsilk);
+    font-family: Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+    color: white;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-shadow:
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000;
+}
+
+.header-row {
+    background-color: lightblue;
+    border-bottom: 2px solid coral;
+    font-weight: bold;
+}
+
+.record-table {
+    border-collapse: collapse;
+    display: table;
+    margin-top: 10px;
+    min-width: 800px;
+}
+
+.record-cell {
+    display: table-cell;
+    padding: 5px;
+}
+
+.record-cell+.record-cell {
+    border-left: 2px solid coral;
+    padding-left: 10px;
+}
+
+.record-row,
+.header-row {
+    display: table-row;
+}
+
+.search-box {
+    background-color: lightcyan;
+    font: inherit;
+    font-weight: normal;
+    margin-top: 10px;
+    min-width: 20ch;
+    padding-left: 5px;
+    width: 20ch;
+}

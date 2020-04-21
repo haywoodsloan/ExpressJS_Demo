@@ -1,0 +1,125 @@
+<html>
+
+<head>
+    <title>Training Report</title>
+    <link rel='stylesheet' href='../css/table.css'>
+    <script src='../js/table.js'></script>
+    <style>
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            white-space: pre;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id='title' class='header'></h1>
+    <h2 id='subtitle' class='header'></h1>
+    <hr style='border-top: 3px solid coral;'>
+
+    <label style='font-weight: bold;'>
+        Search by title or ID:
+        <input class='search-box' type='text' placeholder='title/ID' spellcheck='false'
+            oninput='search(event)'>
+    </label>
+
+    <h3 class='header'>Needed:</h3>
+    <div id='required-table' class='record-table'>
+        <div class='header-row'>
+            <div class='record-cell'>Doc ID</div>
+            <div class='record-cell'>Title</div>
+            <div class='record-cell'>Trained Version</div>
+            <div class='record-cell'>Latest Version</div>
+        </div>
+    </div>
+
+    <h3 class='header'>Completed:</h3>
+    <div id='completed-table' class='record-table'>
+        <div class='header-row'>
+            <div class='record-cell'>Doc ID</div>
+            <div class='record-cell'>Title</div>
+            <div class='record-cell'>Latest Version</div>
+        </div>
+    </div>
+
+    <script>
+        const title = document.getElementById('title');
+        const subtitle = document.getElementById('subtitle');
+
+        const required =  document.getElementById('required-table');
+        const completed = document.getElementById('completed-table');
+
+        (async () => {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                if (!params.has('userId')) {
+                    throw new Error('The userId parameter must be specified');
+                }
+
+                const response = await fetch(`${window.location.origin}/api/user?userId=${params.get('userId')}`);
+                if (!response.ok) {
+                    throw await response.text();
+                }
+
+                const user = await response.json();
+                title.innerText = `Training Report - ${user.FirstName} ${user.LastName}`;
+                subtitle.innerText = `Department: ${user.Department}, Location: ${user.Location}`;
+
+                // If there are required trainings show the table and add rows
+                if (user.NeededTrainings.length > 0) {
+                    // If there isn't a trained version replace with N/A
+                    for (const training of user.NeededTrainings) {
+                        training.TrainedVer = training.TrainedVer || "N/A";
+                    }
+
+                    required.append(...makeRows(user.NeededTrainings, 
+                        ['DocId', 'DocName', 'TrainedVer', 'DocVer']))
+                }
+
+                // If there are required trainings show the table and add rows
+                if (user.CompletedTrainings.length > 0) {
+                    completed.append(...makeRows(user.CompletedTrainings, 
+                        ['DocId', 'DocName', 'DocVer']))
+                }
+            } catch (error) {
+                const stack = document.createElement('div');
+                stack.classList.add('error');
+
+                title.innerText = 'Training Report - FAILED TO GET USER DATA';
+                stack.innerText = error.stack || error;
+
+                document.body.append(stack);
+            }
+        })();
+
+        function search(event) {
+            const input = event.target.value.toLowerCase();
+
+            const requiredRows = document.querySelectorAll('#required-table > .record-row');
+            filterRows(requiredRows, input);
+
+            const completedRows = document.querySelectorAll('#completed-table > .record-row');
+            filterRows(completedRows, input);
+        }
+
+        function filterRows(rows, input) {
+            let count = 0;
+            for (const row of rows) {
+                const id = row.children[0].innerText.toLowerCase();
+                const title = row.children[1].innerText.toLowerCase();
+
+                if (!input || id.startsWith(input) || title.includes(input)) {
+                    row.style.display = null;
+                    row.style.backgroundColor = count % 2 ? rowColor1 : rowColor2;
+                    count++;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
